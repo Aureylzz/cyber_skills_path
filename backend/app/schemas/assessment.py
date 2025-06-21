@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, field_validator
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Any
 from datetime import datetime
 from app.schemas.base import BaseSchema
 from app.models.enums import AssessmentStatus, QuestionType
@@ -45,7 +45,7 @@ class QuestionInAssessment(BaseModel):
     question_type: QuestionType
     difficulty_level: str
     points: float
-    options: List[Dict[str, any]]  # id, text, display_order (no is_correct)
+    options: List[Dict[str, Any]]  # id, text, display_order (no is_correct)
     category: str
     sub_theme: str
 
@@ -93,5 +93,5 @@ class DetailedAssessmentReport(BaseModel):
     session: AssessmentSessionResponse
     difficulty_breakdown: List[DifficultyProgress]
     category_breakdown: List[CategoryProgress]
-    sub_theme_breakdown: List[Dict[str, any]]
-    question_details: List[Dict[str, any]]
+    sub_theme_breakdown: List[Dict[str, Any]]
+    question_details: List[Dict[str, Any]]

@@ -13,3 +13,6 @@ celery
 httpx
 python-dotenv
 psycopg2-binary
+email-validator
+bcrypt
+bcrypt==4.1.2

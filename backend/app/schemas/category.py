@@ -18,9 +18,6 @@ class CategoryBase(BaseSchema):
 class CategoryResponse(CategoryBase, TimestampSchema):
     pass
 
-class CategoryWithSubThemes(CategoryResponse):
-    sub_themes: List["SubThemeResponse"] = []
-
 # Sub-theme schemas
 class SubThemeCreate(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
@@ -46,5 +43,8 @@ class SubThemeResponse(SubThemeBase, TimestampSchema):
 class SubThemeWithCategory(SubThemeResponse):
     category: CategoryBase
 
-# Update forward references
-CategoryWithSubThemes.model_rebuild()
+# This must be defined after SubThemeResponse
+class CategoryWithSubThemes(CategoryResponse):
+    sub_themes: List[SubThemeResponse] = []
+
+# No need to rebuild as we define it after SubThemeResponse

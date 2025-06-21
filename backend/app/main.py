@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import get_settings
+from app.api import auth, categories, sub_themes
+
 
 settings = get_settings()
 
@@ -10,6 +12,11 @@ app = FastAPI(
     docs_url="/api/docs",
     redoc_url="/api/redoc",
 )
+
+# Include routers
+app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
+app.include_router(categories.router, prefix="/api/categories", tags=["categories"])
+app.include_router(sub_themes.router, prefix="/api/sub-themes", tags=["sub-themes"])
 
 # CORS
 app.add_middleware(
