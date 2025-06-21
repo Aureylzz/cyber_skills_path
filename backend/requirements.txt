@@ -12,3 +12,4 @@ aioredis
 celery
 httpx
 python-dotenv
+psycopg2-binary

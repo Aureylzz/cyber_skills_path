@@ -27,3 +27,25 @@ async def root():
 @app.get("/health")
 async def health_check():
     return {"status": "healthy"}
+
+@app.get("/test/db")
+async def test_database():
+    """Test database connectivity and basic queries"""
+    from app.database import AsyncSessionLocal
+    from app.models import DifficultyLevelModel
+    from sqlalchemy import select
+    
+    async with AsyncSessionLocal() as session:
+        # Get difficulty levels
+        result = await session.execute(
+            select(DifficultyLevelModel).order_by(DifficultyLevelModel.level_order)
+        )
+        levels = result.scalars().all()
+        
+        return {
+            "status": "connected",
+            "difficulty_levels": [
+                {"name": level.name, "points": float(level.points)} 
+                for level in levels
+            ]
+        }
