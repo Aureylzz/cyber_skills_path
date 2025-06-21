@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import get_settings
-from app.api import auth, categories, sub_themes
+from app.api import auth, categories, sub_themes, questions
 
 
 settings = get_settings()
@@ -17,6 +17,7 @@ app = FastAPI(
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(categories.router, prefix="/api/categories", tags=["categories"])
 app.include_router(sub_themes.router, prefix="/api/sub-themes", tags=["sub-themes"])
+app.include_router(questions.router, prefix="/api/questions", tags=["questions"])
 
 # CORS
 app.add_middleware(

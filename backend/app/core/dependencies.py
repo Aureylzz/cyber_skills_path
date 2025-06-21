@@ -9,7 +9,8 @@ from app.models import User
 from app.schemas import TokenData
 from app.core.security import verify_token
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
+# Make auto_error=False so it doesn't require authentication
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login", auto_error=False)
 
 async def get_current_user(
     db: Annotated[AsyncSession, Depends(get_db)],
@@ -21,6 +22,9 @@ async def get_current_user(
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
+    
+    if not token:
+        raise credentials_exception
     
     # Verify token
     payload = verify_token(token, token_type="access")
@@ -92,6 +96,24 @@ async def get_current_user_optional(
         return None
     
     try:
-        return await get_current_user(db, token)
-    except HTTPException:
+        # Verify token
+        payload = verify_token(token, token_type="access")
+        if payload is None:
+            return None
+        
+        user_id: str = payload.get("sub")
+        if user_id is None:
+            return None
+        
+        # Get user from database
+        result = await db.execute(
+            select(User).where(User.id == int(user_id))
+        )
+        user = result.scalar_one_or_none()
+        
+        if user and user.is_active:
+            return user
+        
+        return None
+    except Exception:
         return None
